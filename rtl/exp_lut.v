@@ -1,71 +1,134 @@
 module exp_lut (
-    input  wire [2:0]  region,
+    input  wire [3:0]  region,
     output reg  [31:0] a,
     output reg  [31:0] b
 );
 
     // ------------------------------------------------------------
-    // Piecewise-linear approximation
+    // Piecewise Linear Approximation
     //
-    // exp(x) ≈ a*x + b
+    //          exp(x) ≈ a*x + b
     //
-    // region 0 : [-4, -3]
-    // region 1 : [-3, -2]
-    // region 2 : [-2, -1]
-    // region 3 : [-1,  0]
-    // region 4 : [ 0,  1]
-    // region 5 : [ 1,  2]
-    // region 6 : [ 2,  3]
-    // region 7 : [ 3,  4]
+    // 16 regions, each 0.5 wide
     //
-    // a and b are IEEE-754 single-precision values.
+    // Region 0  : [-4.0, -3.5)
+    // Region 1  : [-3.5, -3.0)
+    // Region 2  : [-3.0, -2.5)
+    // Region 3  : [-2.5, -2.0)
+    // Region 4  : [-2.0, -1.5)
+    // Region 5  : [-1.5, -1.0)
+    // Region 6  : [-1.0, -0.5)
+    // Region 7  : [-0.5,  0.0)
+    // Region 8  : [ 0.0,  0.5)
+    // Region 9  : [ 0.5,  1.0)
+    // Region 10 : [ 1.0,  1.5)
+    // Region 11 : [ 1.5,  2.0)
+    // Region 12 : [ 2.0,  2.5)
+    // Region 13 : [ 2.5,  3.0)
+    // Region 14 : [ 3.0,  3.5)
+    // Region 15 : [ 3.5,  4.0]
+    //
+    // a and b are IEEE-754 single precision (FP32).
     // ------------------------------------------------------------
 
     always @(*) begin
 
         case (region)
 
-            3'd0: begin
-                a = 32'h3D00E830;
-                b = 32'h3E13A985;
+            // ----------------------------------------------------
+            // Negative regions
+            // ----------------------------------------------------
+
+            4'd0: begin
+                a = 32'h3CC2ABA6;
+                b = 32'h3DE82E51;
             end
 
-            3'd1: begin
-                a = 32'h3DAF33E7;
-                b = 32'h3E9CE49E;
+            4'd1: begin
+                a = 32'h3D207A8C;
+                b = 32'h3E2B574B;
             end
 
-            3'd2: begin
-                a = 32'h3E6E200E;
-                b = 32'h3F19B55C;
+            4'd2: begin
+                a = 32'h3D844AD6;
+                b = 32'h3E796BA2;
             end
 
-            3'd3: begin
-                a = 32'h3F21D2A7;
+            4'd3: begin
+                a = 32'h3DDA1CF8;
+                b = 32'h3EB25927;
+            end
+
+            4'd4: begin
+                a = 32'h3E33CDCD;
+                b = 32'h3EF91877;
+            end
+
+            4'd5: begin
+                a = 32'h3E943928;
+                b = 32'h3F2849ED;
+            end
+
+            4'd6: begin
+                a = 32'h3EF460FC;
+                b = 32'h3F585DD7;
+            end
+
+            4'd7: begin
+                a = 32'h3F4974D0;
                 b = 32'h3F800000;
             end
 
-            3'd4: begin
-                a = 32'h3FDBF0A9;
+
+            // ----------------------------------------------------
+            // Positive regions
+            // ----------------------------------------------------
+
+            4'd8: begin
+                a = 32'h3FA61299;
                 b = 32'h3F800000;
             end
 
-            3'd5: begin
-                a = 32'h409576FC;
-                b = 32'hBFF9EB46;
+            4'd9: begin
+                a = 32'h4008E75C;
+                b = 32'h3F1443E0;
             end
 
-            3'd6: begin
-                a = 32'h414B24C9;
-                b = 32'hC1900800;
+            4'd10: begin
+                a = 32'h4061B754;
+                b = 32'hBF4EFBFF;
             end
 
-            3'd7: begin
-                a = 32'h420A0CEA;
-                b = 32'hC2A6E794;
+            4'd11: begin
+                a = 32'h40BA124D;
+                b = 32'hC087B175;
             end
 
-            // Invalid region
+            4'd12: begin
+                a = 32'h411963D8;
+                b = 32'hC13C8E1D;
+            end
+
+            4'd13: begin
+                a = 32'h417CE5BA;
+                b = 32'hC1DAA96A;
+            end
+
+            4'd14: begin
+                a = 32'h41D07A88;
+                b = 32'hC2686035;
+            end
+
+            4'd15: begin
+                a = 32'h422BDC91;
+                b = 32'hC2EA86E1;
+            end
+
+
+            // ----------------------------------------------------
+            // Safety default
+            // ----------------------------------------------------
+
             default: begin
                 a = 32'h00000000;
                 b = 32'h00000000;

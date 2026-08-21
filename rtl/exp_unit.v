@@ -7,7 +7,7 @@ module exp_unit (
     // Internal signals
     // ------------------------------------------------------------
 
-    wire [2:0]  region;
+    wire [3:0]  region;
     wire [31:0] a;
     wire [31:0] b;
 
